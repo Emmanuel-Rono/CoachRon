@@ -8,7 +8,7 @@ class CoachRequest(BaseModel):
                  description="The message to send to the coach."
     )
 
-    class CoachResponse(BaseModel):
+class CoachResponse(BaseModel):
         reply_text: str
         positive_observation: str
         immediate_action: str
