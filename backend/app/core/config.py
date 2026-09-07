@@ -4,7 +4,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 BACKEND_DIR = Path(__file__).resolve().parents[2]
 
-class settings ():
+class settings (BaseSettings):
     app_name: str ="Coach Ron"
     ollama_base_url :str = "http://localhost:11434"
     ollama_model :str = "qwn:3.1.7b"
