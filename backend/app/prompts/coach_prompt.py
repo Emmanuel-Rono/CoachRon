@@ -20,8 +20,10 @@ Return only valid JSON with this exact structure:
 {
   "reply_text": "string",
   "positive_observation": "string",
-  "focus_area": "string",
-  "immediate_correction": "string or null",
-  "practice_prompt": "string"
+  "immediate_action": "string",
+  "area_for_improvement": "string",
+  "practise_prompt": "string"
 }
+
+When no correction is needed, set "immediate_action" to "No correction needed."
 """

@@ -1,8 +1,9 @@
 
+from langchain_core.messages import HumanMessage, SystemMessage
+
+from app.prompts.coach_prompt import Coach_Ron_System_Prompt
 from app.schemas.coach import CoachResponse
-from langchain_core.messages import SystemMessage, HumanMessage
 from app.services.ollama_client import get_ollama_client
-from backend.app.prompts.coach_prompt import Coach_Ron_System_Prompt
 
 
 
