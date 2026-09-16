@@ -2,8 +2,6 @@ from langchain_ollama import ChatOllama
 
 from app.core.config import settings
 
-
-
 def get_ollama_client() -> ChatOllama:
     return ChatOllama(
         model=settings.ollama_model,
