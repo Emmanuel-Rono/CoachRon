@@ -19,6 +19,4 @@ class CoachingService:
             ]
         )
 
-
-
 coaching_service = CoachingService()
