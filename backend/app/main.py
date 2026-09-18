@@ -2,6 +2,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.coach import router as coach_router
+from app.api.transcription import router as transcription_router
+
 from app.core.config import settings
 
 
@@ -15,10 +17,10 @@ app.add_middleware(
 )
 
 app.include_router(coach_router)
+app.include_router(transcription_router)
 
 
 @app.get("/health")
 def health() -> dict[str, str]:
     return {"status": "ok"}
 
-app.include_router(coach_router)

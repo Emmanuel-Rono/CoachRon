@@ -2,12 +2,10 @@
 
 from fastapi import APIRouter, File, HTTPException, UploadFile
 
-from backend.app.schemas.audioSchema import AudioTranscriptMetadataSchema
-
+from app.schemas.audioSchema import AudioTranscriptMetadataSchema
 
 router = APIRouter(prefix = "/api", tags = ["Transcription"])
-ALLOWED_AUDIO_TYPES =
-{
+ALLOWED_AUDIO_TYPES ={
     "audio/mpeg",
     "audio/wav",
     "audio/x-wav",
