@@ -20,3 +20,5 @@ app.include_router(coach_router)
 @app.get("/health")
 def health() -> dict[str, str]:
     return {"status": "ok"}
+
+app.include_router(coach_router)
