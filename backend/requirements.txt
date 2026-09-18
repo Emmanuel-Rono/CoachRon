@@ -3,3 +3,4 @@ uvicorn[standard]
 langchain
 langchain-ollama
 pydantic-settings
+python-multipart
