@@ -29,6 +29,7 @@ async def transcribe_audio(
             status_code=400,
             detail="Empty audio file provided.",
         )
+    £Check limit
 
     if len(content) > 15 * 1024 * 1024:  # 15 MB limit
         raise HTTPException(
