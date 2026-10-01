@@ -15,4 +15,7 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
+    whisper_executable: str
+    whisper_model: str
+    ffmpeg_executable: str
 settings = Settings()
