@@ -3,6 +3,7 @@ import tempfile
 from pathlib import Path
 from app.schemas.audioSchema import AudioTranscriptMetadataSchema
 from app.core.config import settings
+import json
 
 class AudioLoop:
     def  work_on_audio(
@@ -133,4 +134,20 @@ def _run_whisper(
         raise RuntimeError(
             "Whisper could not transcribe the audio."
         ) from error
-    
+
+
+@staticmethod
+def _read_transcript_from_json(json_path: Path) -> str:
+    with open(json_path, "r", encoding="utf-8") as f:
+        payload = json.load(f)
+        segments = payload.get("transcription", [])
+
+        transcript = " ".join(
+            segment.get("text", "").strip()
+            for segment in segments
+        ).strip()
+
+        if not transcript:
+            raise RuntimeError("No speech was recognized in the recording.")
+
+        return transcript
