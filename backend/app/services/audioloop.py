@@ -1,11 +1,8 @@
-
-
+import subprocess
 import tempfile
-from zipfile import Path
-
-from backend.app.schemas.audioSchema import AudioTranscriptMetadataSchema
-from backend.app.core.config import settings
-
+from pathlib import Path
+from app.schemas.audioSchema import AudioTranscriptMetadataSchema
+from app.core.config import settings
 
 class AudioLoop:
     def  work_on_audio(
@@ -16,7 +13,7 @@ class AudioLoop:
                     )-> AudioTranscriptMetadataSchema:
 
         whisper_executable = Path(settings.whisper_executable)
-        transcription_model= settings.whisper_model
+        transcription_model= Path(settings.whisper_model)
         ffmpeg_executable = Path(settings.ffmpeg_executable)
 
         self._validate_dependencies(whisper_executable, 
@@ -58,13 +55,82 @@ class AudioLoop:
 
         
 
-        
-        
-        
+    @staticmethod
+    def _validate_dependencies(
+        whisper_executable: Path,
+        ffmpeg_executable: Path,
+        transcription_model: Path,
+    ) -> None:
+        dependencies = {
+            "whisper_executable": whisper_executable,
+            "ffmpeg_executable": ffmpeg_executable,
+            "transcription_model": transcription_model,
+        }
 
-       
-        
-        
+        for name, path in dependencies.items():
+            if not path.is_file():
+                raise FileNotFoundError(f"{name} not found at {path}")
+
+    @staticmethod
+    def _convert_to_wav(
+        ffmpeg_executable: Path,
+        uploaded_audio_path: Path,
+        wav_path: Path,
+    ) -> None:
+        command = [
+            str(ffmpeg_executable),
+            "-nostdin",
+            "-y",
+            "-i", str(uploaded_audio_path),
+            "-vn",
+            "-ar", "16000",
+            "-ac", "1",
+            "-c:a", "pcm_s16le",
+            str(wav_path),
+        ]
+
+        try:
+            subprocess.run(
+                command,
+                check=True,
+                capture_output=True,
+                timeout=60,
+            )
+        except subprocess.TimeoutExpired as error:
+            raise RuntimeError("Audio conversion timed out.") from error
+        except subprocess.CalledProcessError as error:
+            raise RuntimeError(
+                "FFmpeg could not convert the audio."
+            ) from error
 
 
+@staticmethod
+def _run_whisper(
+    whisper_executable: Path,
+    whisper_model: Path,
+    wav_path: Path,
+    output_base: Path,
+) -> None:
+    command = [
+        str(whisper_executable),
+        str(wav_path),
+        "--model", str(whisper_model),
+        "--output_dir", str(output_base.parent),
+        "--output_format", "json",
+        "--language", "en",
+    ]
 
+    try:
+        subprocess.run(
+            command,
+            check=True,
+            capture_output=True,
+            timeout=300,
+        )
+    except subprocess.TimeoutExpired as error:
+        raise RuntimeError("Whisper transcription timed out.") from error
+    except subprocess.CalledProcessError as error:
+        raise RuntimeError(
+            "Whisper could not transcribe the audio."
+        ) from error
+    
