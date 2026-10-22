@@ -4,6 +4,7 @@ from pathlib import Path
 from app.schemas.audioSchema import AudioTranscriptMetadataSchema
 from app.core.config import settings
 import json
+import wave
 
 class AudioLoop:
     def  work_on_audio(
@@ -30,7 +31,7 @@ class AudioLoop:
 
 
             self._convert_to_wav(ffmpeg_executable = ffmpeg_executable,
-                                 input_path= input_path,
+                                 uploaded_audio_path= input_path,
                                  wav_path= wav_path
                                  )
             self._run_whisper(whisper_executable=whisper_executable,
@@ -114,15 +115,17 @@ def _run_whisper(
 ) -> None:
     command = [
         str(whisper_executable),
+        "-m",
+        str(whisper_model),
+        "-f",
         str(wav_path),
-        "--model", str(whisper_model),
-        "--output_dir", str(output_base.parent),
-        "--output_format", "json",
-        "--language", "en",
+        "-oj",
+        "-l",
+        -"en",
     ]
 
     try:
-        subprocess.run(
+        result= subprocess.run(
             command,
             check=True,
             capture_output=True,
@@ -146,8 +149,23 @@ def _read_transcript_from_json(json_path: Path) -> str:
             segment.get("text", "").strip()
             for segment in segments
         ).strip()
-
         if not transcript:
             raise RuntimeError("No speech was recognized in the recording.")
 
         return transcript
+
+    @staticmethod
+    def _get_audio_duration(wav_path:Path)-> float:
+        with wave.open(str(wav_path), "rb") as audio:
+            frame_count = audio.getnframes()
+            frame_rate = audio.getframerate()
+
+            return round (frame_count / frame_rate, 3)
+
+@staticmethod
+def _count_words(transcript: str) -> int:
+    return len(transcript.split())
+
+
+
+audio_loop = AudioLoop()
