@@ -106,53 +106,53 @@ class AudioLoop:
             ) from error
 
 
-@staticmethod
-def _run_whisper(
-    whisper_executable: Path,
-    whisper_model: Path,
-    wav_path: Path,
-    output_base: Path,
-) -> None:
-    command = [
-        str(whisper_executable),
-        "-m",
-        str(whisper_model),
-        "-f",
-        str(wav_path),
-        "-oj",
-        "-l",
-        -"en",
-    ]
+    @staticmethod
+    def _run_whisper(
+        whisper_executable: Path,
+        whisper_model: Path,
+        wav_path: Path,
+        output_base: Path,
+    ) -> None:
+        command = [
+            str(whisper_executable),
+            "-m",
+            str(whisper_model),
+            "-f",
+            str(wav_path),
+            "-oj",
+            "-l",
+            -"en",
+        ]
 
-    try:
-        result= subprocess.run(
-            command,
-            check=True,
-            capture_output=True,
-            timeout=300,
-        )
-    except subprocess.TimeoutExpired as error:
-        raise RuntimeError("Whisper transcription timed out.") from error
-    except subprocess.CalledProcessError as error:
-        raise RuntimeError(
-            "Whisper could not transcribe the audio."
-        ) from error
+        try:
+            result= subprocess.run(
+                command,
+                check=True,
+                capture_output=True,
+                timeout=300,
+            )
+        except subprocess.TimeoutExpired as error:
+            raise RuntimeError("Whisper transcription timed out.") from error
+        except subprocess.CalledProcessError as error:
+            raise RuntimeError(
+                "Whisper could not transcribe the audio."
+            ) from error
 
 
-@staticmethod
-def _read_transcript_from_json(json_path: Path) -> str:
-    with open(json_path, "r", encoding="utf-8") as f:
-        payload = json.load(f)
-        segments = payload.get("transcription", [])
+    @staticmethod
+    def _read_transcript_from_json(json_path: Path) -> str:
+        with open(json_path, "r", encoding="utf-8") as f:
+            payload = json.load(f)
+            segments = payload.get("transcription", [])
 
-        transcript = " ".join(
-            segment.get("text", "").strip()
-            for segment in segments
-        ).strip()
-        if not transcript:
-            raise RuntimeError("No speech was recognized in the recording.")
+            transcript = " ".join(
+                segment.get("text", "").strip()
+                for segment in segments
+            ).strip()
+            if not transcript:
+                raise RuntimeError("No speech was recognized in the recording.")
 
-        return transcript
+            return transcript
 
     @staticmethod
     def _get_audio_duration(wav_path:Path)-> float:
@@ -162,9 +162,9 @@ def _read_transcript_from_json(json_path: Path) -> str:
 
             return round (frame_count / frame_rate, 3)
 
-@staticmethod
-def _count_words(transcript: str) -> int:
-    return len(transcript.split())
+    @staticmethod
+    def _count_words(transcript: str) -> int:
+        return len(transcript.split())
 
 
 
