@@ -115,13 +115,11 @@ class AudioLoop:
     ) -> None:
         command = [
             str(whisper_executable),
-            "-m",
-            str(whisper_model),
-            "-f",
-            str(wav_path),
+            "-m", str(whisper_model),
+            "-f", str(wav_path),
             "-oj",
-            "-l",
-            -"en",
+            "-l", "en",
+            "-of", str(output_base),
         ]
 
         try:
