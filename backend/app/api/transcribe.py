@@ -7,7 +7,7 @@ from app.schemas.audioSchema import AudioTranscriptMetadataSchema
 from app.services.audioloop import audio_loop
 
 
-router = APIRouter(prefix="/api", tags=["Transcription"])
+router = APIRouter(prefix="/api", tags=["Transcribe"])
 logger = logging.getLogger(__name__)
 
 MAX_AUDIO_BYTES = 15 * 1024 * 1024
