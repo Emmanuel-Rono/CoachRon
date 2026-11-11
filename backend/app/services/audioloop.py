@@ -54,9 +54,7 @@ class AudioLoop:
                 word_count=word_count,
                 words = [],
             )
-
-        
-
+    
     @staticmethod
     def _validate_dependencies(
         whisper_executable: Path,
